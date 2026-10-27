@@ -99,16 +99,17 @@ jobs:
         with:
           context: ./nginx
           push: true
-          tags: quflijj/kittygram_gateway:
-          
+          tags: quflijj/kittygram_gateway:latest
+
       - name: Notify Telegram
         if: success()
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
         run: |
-          curl --fail-with-body --silent --show-error \
+          curl --fail --silent --show-error \
+            --output /dev/null \
             --request POST \
             --data-urlencode "chat_id=${TELEGRAM_TO}" \
-            --data-urlencode "text=✅ Kittygram CI/CD успешно завершён! Тесты пройдены, Docker-образы опубликованы. https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --data-urlencode "text=Kittygram CI/CD успешно завершён! Тесты пройдены, Docker-образы опубликованы. https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
             "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage"
